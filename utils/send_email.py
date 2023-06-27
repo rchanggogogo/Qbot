@@ -20,11 +20,11 @@ from pathlib import Path
 TOP_DIR = Path(__file__).parent.parent.joinpath("gui")
 
 # 发件人邮箱
-mail_sender = "1144262839@qq.com"
+mail_sender = "852324033@qq.com"
 # 邮箱授权码,注意这里不是邮箱密码,如何获取邮箱授权码,请看本文最后教程
 mail_license = os.getenv("MAIL_LICENSE")
 # 收件人邮箱，可以为多个收件人
-mail_receivers = ["yidazhang1@gmail.com", "zhangwei@qcraft.ai"]
+mail_receivers = ["rchanggogogo@gmail.com"]
 # 邮件主题
 subject = """Python邮件测试"""
 
@@ -62,7 +62,7 @@ html_content = """
                 <body>
                     <h1 align="center">这个是标题，xxxx通知</h1>
                     <p><strong>您好：</strong></p>
-                    <blockquote><p><strong>以下内容是本次会议的纪要,请查收！</strong></p></blockquote>                    
+                    <blockquote><p><strong>以下内容是本次会议的纪要,请查收！</strong></p></blockquote>
                     <blockquote><p><strong>发言人：{fayanren}</strong></p></blockquote>
                     <blockquote><p><strong>主持人：{zhuchiren}</strong></p></blockquote>
                     <p align="right">{mytime}</p>
@@ -78,7 +78,7 @@ def send_email(mail_sender, mail_receivers, content):
 
     # 创建SMTP对象
     if "qq" in mail_sender:
-        server = smtplib.SMTP_SSL("smtp.qq.com", 465)
+        server = smtplib.SMTP_SSL("smtp.exmail.qq.com", 465)
     elif "gmail" in mail_sender:
         server = smtplib.SMTP("smtp.gmail.com", 587)  # Connect to the server
         server.starttls()
