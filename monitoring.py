@@ -10,7 +10,7 @@ import efinance as ef
 import run
 import kline
 import backtest
-from utils.send_email import send_email
+from utils.send_email import send_email, mail_receivers, message_text
 import talib
 import os
 import datetime
@@ -38,8 +38,8 @@ def test(codes, method):
                 date.append(data.日期[pos[0][-1]])
                 results[code] = date
     return results
-    
-    
+
+
 # 获取指定股票代码集合的k线符合method形态的位置
 def getPosition(codes):
     methods = {
@@ -51,7 +51,7 @@ def getPosition(codes):
     "三只乌鸦":talib.CDLIDENTICAL3CROWS,
     "下降三法":talib.CDLRISEFALL3METHODS
     }
-    
+
     today = datetime.datetime.now()
     for name, method in methods.items():
         results = test(codes, method)
@@ -66,8 +66,8 @@ def getPosition(codes):
             # 报告两天内出现的
             if days <= 2:
                 report(date, name, code)
-    
-    
+
+
 # 获取股票60分钟线数据
 @run.change_dir
 def getRecentData(codes, refresh = False, savePath = "./data2/"):
@@ -78,8 +78,8 @@ def getRecentData(codes, refresh = False, savePath = "./data2/"):
             stock_data.to_csv(filename)
     else:
         return
-        
-        
+
+
 # 出现卖出形态，向指定邮箱发送警告邮件
 @run.change_dir
 def report(date, name, code):
@@ -96,12 +96,12 @@ def report(date, name, code):
         title = "报告:" + code[2:] + "出现" + name + "形态"
         content = "股票" + code[2:] + "在" + date + "出现" + name + "形态，股票现价" + str(price)
         print(title, content)
-        
+
         mail_sender = "1144262839@qq.com"
         send_email(mail_sender, mail_receivers, message_text)
         # mail.sentMail(title, content)
-        
-        
+
+
 # 进行一次检测
 @run.change_dir
 def task(codes):
@@ -111,7 +111,7 @@ def task(codes):
     print(now, "执行了一次")
     time.sleep(s)
 
-"""    
+"""
 # 运行死循环，定期检测，每隔s秒检测一次
 @run.change_dir
 def run(codes, s):
@@ -138,4 +138,3 @@ if __name__ == "__main__":
     codes = [code]
     s = 20
     run(codes, s)
-    

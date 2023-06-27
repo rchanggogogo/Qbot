@@ -4,9 +4,22 @@ import json
 import abc
 import hashlib
 import typing as t
-from utils import dict_2_obj
+
 from flask import request, jsonify
 from decrypt import AESCipher
+
+
+class Obj(dict):
+  def __init__(self, d):
+    for a, b in d.items():
+      if isinstance(b, (list, tuple)):
+        setattr(self, a, [Obj(x) if isinstance(x, dict) else x for x in b])
+      else:
+        setattr(self, a, Obj(b) if isinstance(b, dict) else b)
+
+
+def dict_2_obj(d: dict):
+  return Obj(d)
 
 
 class Event(object):
