@@ -9,7 +9,7 @@ url 参数改动
 
 import re
 
-from . import basequotation
+import basequotation
 
 
 class HKQuote(basequotation.BaseQuotation):

@@ -3,7 +3,7 @@ import re
 from datetime import datetime
 from typing import Optional
 
-from . import basequotation
+import basequotation
 
 
 class Tencent(basequotation.BaseQuotation):

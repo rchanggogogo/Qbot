@@ -6,7 +6,7 @@ url = "https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20_sh688017_5_163274284742
 
 import json
 
-from . import basequotation, helpers
+import basequotation, helpers
 
 
 class SinaTimeKline(basequotation.BaseQuotation):

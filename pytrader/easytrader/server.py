@@ -29,7 +29,7 @@ def error_handle(func):
 def post_prepare():
     json_data = request.get_json(force=True)
 
-    user = api.use(json_data.pop("broker"))
+    user = api.use(json_data.pop("broker"))  # 目前只有东财和 mock 两种
     user.prepare(**json_data)
 
     global_store["user"] = user

@@ -6,7 +6,7 @@ url = "https://ifzq.gtimg.cn/appstock/app/kline/mkline?param=sz002230,m30,,320&_
 
 import json
 
-from . import basequotation, helpers
+import basequotation, helpers
 
 
 class MinuteTimeKline(basequotation.BaseQuotation):

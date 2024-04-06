@@ -16,7 +16,7 @@ url = "http://web.ifzq.gtimg.cn/appstock/app/hkfqkline/get?_var=kline_dayqfq&par
 import json
 import re
 
-from . import basequotation
+import basequotation
 
 
 class DayKline(basequotation.BaseQuotation):

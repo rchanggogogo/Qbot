@@ -5,7 +5,7 @@ url = "http://data.gtimg.cn/flashdata/hushen/minute/sz000001.js?maxage=110&0.281
 """
 
 import re
-from . import basequotation, helpers
+import basequotation, helpers
 
 
 class TimeKline(basequotation.BaseQuotation):
@@ -25,7 +25,8 @@ class TimeKline(basequotation.BaseQuotation):
 
     def _fetch_stock_data(self, stock_list):
         """因为 timekline 的返回没有带对应的股票代码，所以要手动带上"""
-        res = super()._fetch_stock_data(stock_list)
+        stock_list_ = self._gen_stock_prefix(stock_codes=stock_list)
+        res = super()._fetch_stock_data(stock_list_)
 
         with_stock = []
         for stock, resp in zip(stock_list, res):
@@ -45,3 +46,8 @@ class TimeKline(basequotation.BaseQuotation):
             )
             stock_dict[stock_code[:-3]] = {"date": date, "time_data": time_data}
         return stock_dict
+
+
+if __name__ == "__main__":
+    timeline = TimeKline()
+    print(timeline.get_stock_data(["000017"]))

@@ -2,7 +2,7 @@
 import re
 import time
 
-from . import basequotation
+import basequotation
 
 
 class Sina(basequotation.BaseQuotation):

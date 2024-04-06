@@ -6,7 +6,7 @@ import warnings
 
 import requests
 
-from . import helpers
+import helpers
 
 
 class BaseQuotation(metaclass=abc.ABCMeta):
