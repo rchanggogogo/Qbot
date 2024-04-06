@@ -1,26 +1,23 @@
-# main_window
-wxPython
+# wxPython
 pandas
 matplotlib==3.2.2
 backtrader
-#pyfolio 直接安装会有bug
 #pip install git+https://github.com/quantopian/pyfolio
 backtrader_plotting
 statsmodels
 quantstats
-requests #这是yahoofinance需要
-loguru #简化logger的使用
+requests
+loguru
 binance-connector
-#为了用户体验，非必要不引入三方库
-#Ta-Lib 需要https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib 从这里下载对应的版本安装
-numba # pandas 多序列rolling需要
+numba 
 pykalman
 tables
 scikit-learn
 empyrical
-stable-baselines3
+stable-baselines==2.10.0
 jupyter
-gym[all]
+# Ta-Lib #download https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib
+# gym==0.17.1
 pyglet==1.5.0
 tensorboard
 tensortrade
@@ -33,10 +30,9 @@ easyquotation
 easytrader
 arrow
 tushare
-TA-Lib
 numpy
 cython
-pyqlib
+# pyqlib # maybe manual
 jqdatasdk
 redis
 pydantic
