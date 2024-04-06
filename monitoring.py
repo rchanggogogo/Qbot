@@ -7,20 +7,25 @@ import numpy as np
 import pandas as pd
 # import akshare as ak
 import efinance as ef
-import run
+
 import kline
-import backtest
 from utils.send_email import send_email, mail_receivers, message_text
+from utils.larkbot import LarkBot
 import talib
 import os
 import datetime
 import time
 from dateutil.relativedelta import relativedelta
 from apscheduler.schedulers.blocking import BlockingScheduler
+from dotenv import load_dotenv
+load_dotenv()
+
+LARK_SIGN = os.getenv("LARK_SIGN")
+LARK_WEBHOOK = os.getenv("LARK_WEBHOOK")
+lark = LarkBot(secret=LARK_SIGN, webhook=LARK_WEBHOOK)
 
 
 # 检测k线有无method所定义的形态
-@run.change_dir
 def test(codes, method):
     # print("检测k线形态")
     results = {}
@@ -69,7 +74,7 @@ def getPosition(codes):
 
 
 # 获取股票60分钟线数据
-@run.change_dir
+
 def getRecentData(codes, refresh = False, savePath = "./data2/"):
     if refresh == True:
         for code in codes:
@@ -81,7 +86,7 @@ def getRecentData(codes, refresh = False, savePath = "./data2/"):
 
 
 # 出现卖出形态，向指定邮箱发送警告邮件
-@run.change_dir
+
 def report(date, name, code):
     # print("测试", code)
     filename = "./data2/" + code[2:] + ".csv"
@@ -97,13 +102,14 @@ def report(date, name, code):
         content = "股票" + code[2:] + "在" + date + "出现" + name + "形态，股票现价" + str(price)
         print(title, content)
 
-        mail_sender = "1144262839@qq.com"
-        send_email(mail_sender, mail_receivers, message_text)
+        # mail_sender = "1144262839@qq.com"
+        # send_email(mail_sender, mail_receivers, message_text)
+        lark.send(content=content)
         # mail.sentMail(title, content)
 
 
 # 进行一次检测
-@run.change_dir
+
 def task(codes):
     getRecentData(codes = codes, refresh = True, savePath = "./data2/")
     getPosition(codes)
@@ -111,9 +117,9 @@ def task(codes):
     print(now, "执行了一次")
     time.sleep(s)
 
-"""
+
 # 运行死循环，定期检测，每隔s秒检测一次
-@run.change_dir
+
 def run(codes, s):
     if s <= 0:
         print("时间间隔需大于0，程序将退出\n")
@@ -123,18 +129,18 @@ def run(codes, s):
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         print(now, "执行了一次")
         time.sleep(s)
-"""
+
 
 
 # 每间隔s分钟监控codes股票形态
-def run(codes, s):
-    scheduler = BlockingScheduler(timezone="Asia/Chongqing")
-    scheduler.add_job(task, "cron", day_of_week = "mon-fri", hour = "9-15", minute = "*/"+str(s), args = [codes])
-    scheduler.start()
+# def run(codes, s):
+#     scheduler = BlockingScheduler(timezone="Asia/Chongqing")
+#     scheduler.add_job(task, "cron", day_of_week = "mon-fri", hour = "9-15", minute = "*/"+str(s), args = [codes])
+#     scheduler.start()
 
 
 if __name__ == "__main__":
     code = "sh601668"
     codes = [code]
-    s = 20
+    s = 2
     run(codes, s)

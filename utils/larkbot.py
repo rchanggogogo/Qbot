@@ -7,11 +7,9 @@ import base64
 import hashlib
 import hmac
 from datetime import datetime
+from dotenv import load_dotenv
 
 import requests
-
-WEBHOOK_URL="https://open.feishu.cn/open-apis/bot/v2/hook/efe3d146-84c4-4d84-aba9-3c4d1d9e4f1a"
-
 # 发送更加个性化的消息 
 # https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN#383d6e48
 content_json = {
@@ -48,10 +46,11 @@ content_json = {
 }
 
 class LarkBot:
-    def __init__(self, secret: str) -> None:
+    def __init__(self, secret: str, webhook) -> None:
         if not secret:
             raise ValueError("invalid secret key")
         self.secret = secret
+        self.webhook = webhook
 
     def gen_sign(self, timestamp: int) -> str:
         string_to_sign = '{}\n{}'.format(timestamp, self.secret)
@@ -72,7 +71,7 @@ class LarkBot:
             "msg_type": "text",
             "content": {"text": content},
         }
-        resp = requests.post(url=WEBHOOK_URL, json=params)
+        resp = requests.post(url=self.webhook, json=params)
         resp.raise_for_status()
         result = resp.json()
         if result.get("code") and result["code"] != 0:
@@ -81,8 +80,9 @@ class LarkBot:
         print("消息发送成功")
 
 def main():
-    WEBHOOK_SECRET = "wNMVU3ewSm2F0G2TwTX4Fd"
-    bot = LarkBot(secret=WEBHOOK_SECRET)
+    load_dotenv('../.env')
+    WEBHOOK_SECRET = ""
+    bot = LarkBot(secret=WEBHOOK_SECRET,webhook="")
     bot.send(content="[测试] 我是一只高级鸽子！")
 
 if __name__ == '__main__':

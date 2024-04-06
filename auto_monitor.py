@@ -59,7 +59,7 @@ def show_notification_2(title, text):
 使用mac系统定时任务crontab设置告警通知的执行时间。
 crontab设置过程
     1. 输入 crontab -e进入设置文本。
-    2. 填写 */3 9-12,13-15 * * 1-5 /usr/local/anaconda3/bin/python /Users/charmve/Qbot/auto_monitor.py ，
+    2. 填写 */3 9-12,13-15 * * 1-5 /Users/changlei/opt/anaconda3/envs/qbot/bin/python /Users/changlei/Work/01-project/Qbot/auto_monitor.py ，
     即周一到周五，上午9点到12点，下午1点到3点，每三分钟执行阀值告警。
 """
 
