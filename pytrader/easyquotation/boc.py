@@ -14,5 +14,10 @@ class Boc:
         data = re.findall(r"<td>(.*?)</td>", rep.text)
 
         if currency == "usa":
-            return {"sell": data[-13], "buy": data[-15]}
+            return {" sell": data[-13], "发布时间": data[-15]}
         return {}
+
+
+if __name__ == "__main__":
+    boc = Boc()
+    print(boc.get_exchange_rate())
