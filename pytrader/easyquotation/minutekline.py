@@ -10,10 +10,10 @@ import basequotation, helpers
 
 
 class MinuteTimeKline(basequotation.BaseQuotation):
-    """腾讯免费行情获取"""
+    """获取分钟线实时数据，根据 minute 参数获取对应的分钟线数据"""
 
     max_num = 80
-    minute = 5
+    minute = 1
 
     @property
     def stock_api(self) -> str:
@@ -44,7 +44,7 @@ class MinuteTimeKline(basequotation.BaseQuotation):
     def format_response_data(self, rep_data, **kwargs):
         stock_dict = dict()
         _var = "m%d_today=" % self.minute
-        prefix = kwargs["prefix"] if kwargs["prefix"] in kwargs else False
+        prefix = kwargs["prefix"] if "prefix" in kwargs else False
         for stock_detail in rep_data:
             # pylint: disable=line-too-long
             # res like ['min_data="', 'date:180413', '0930 11.64 29727', '0931 11.65 52410']
@@ -55,3 +55,8 @@ class MinuteTimeKline(basequotation.BaseQuotation):
                     "m%d" % self.minute
                 ]
         return stock_dict
+
+
+if __name__ == "__main__":
+    timeline = MinuteTimeKline()
+    print(timeline.real(["sz000001"]))

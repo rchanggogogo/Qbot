@@ -14,6 +14,9 @@ class Tencent(basequotation.BaseQuotation):
 
     @property
     def stock_api(self) -> str:
+        """
+        获取股票当天的详细信息
+        """
         return "http://qt.gtimg.cn/q="
 
     def format_response_data(self, rep_data, prefix=False):
@@ -106,3 +109,9 @@ class Tencent(basequotation.BaseQuotation):
             return float(s)
         except ValueError:
             return None
+
+if __name__ == "__main__":
+    quotation = Tencent()
+    print(quotation.get_stock_data(["sz000001"]))
+
+    # {'000001': {'name': '平安银行', 'code': '000001', 'now': 10.43, 'close': 10.46, 'open': 10.42, 'volume': 90636100.0, 'bid_volume': 38137300, 'ask_volume': 52498800.0, 'bid1': 10.43, 'bid1_volume': 654400, 'bid2': 10.42, 'bid2_volume': 1173100, 'bid3': 10.41, 'bid3_volume': 990700, 'bid4': 10.4, 'bid4_volume': 1567500, 'bid5': 10.39, 'bid5_volume': 1335900, 'ask1': 10.44, 'ask1_volume': 654100, 'ask2': 10.45, 'ask2_volume': 550500, 'ask3': 10.46, 'ask3_volume': 632400, 'ask4': 10.47, 'ask4_volume': 512200, 'ask5': 10.48, 'ask5_volume': 816100, '最近逐笔成交': '', 'datetime': datetime.datetime(2024, 4, 8, 16, 15), '涨跌': -0.03, '涨跌(%)': -0.29, 'high': 10.49, 'low': 10.37, '价格/成交量(手)/成交额': '10.43/906361/945290441', '成交量(手)': 90636100, '成交额(万)': 945290000.0, 'turnover': 0.47, 'PE': 4.36, 'unknown': '', 'high_2': 10.49, 'low_2': 10.37, '振幅': 1.15, '流通市值': 2024.0, '总市值': 2024.04, 'PB': 0.5, '涨停价': 11.51, '跌停价': 9.41, '量比': 0.83, '委差': 25563.0, '均价': 10.43, '市盈(动)': 4.36, '市盈(静)': 4.36}}

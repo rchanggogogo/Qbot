@@ -10,7 +10,7 @@ import basequotation, helpers
 
 
 class SinaTimeKline(basequotation.BaseQuotation):
-    """腾讯免费行情获取"""
+    """新浪5分钟行情获取"""
 
     max_num = 1
 
@@ -38,8 +38,12 @@ class SinaTimeKline(basequotation.BaseQuotation):
     def format_response_data(self, rep_data, **kwargs):
         stock_dict = dict()
         for stock_code, stock_detail in rep_data:
-            start = stock_detail.index("jsopnp(") + len("jsopnp(")
+            stock_detail = stock_detail.split("\n")[1]
             # pylint: disable=line-too-long
-            stock_detail = stock_detail[start:-1]
-            stock_dict[stock_code] = json.loads(stock_detail)
+            data = stock_detail[stock_detail.index("["):-2]
+            stock_dict[stock_code] = json.loads(data)
         return stock_dict
+
+if __name__ == "__main__":
+    timeline = SinaTimeKline()
+    print(timeline.get_stock_data(["sz000001"]))
