@@ -26,7 +26,8 @@ class SinaTimeKline(basequotation.BaseQuotation):
 
     def _fetch_stock_data(self, stock_list):
         """因为 timekline 的返回没有带对应的股票代码，所以要手动带上"""
-        res = super()._fetch_stock_data(stock_list)
+        stock_list_ = self._gen_stock_prefix(stock_codes=stock_list)
+        res = super()._fetch_stock_data(stock_list_)
 
         with_stock = []
         for stock, resp in zip(stock_list, res):
