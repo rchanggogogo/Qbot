@@ -18,7 +18,7 @@ from easytrader.utils.misc import file2dict
 config = file2dict("/Users/changlei/Work/01-project/Qbot/pytrader/jqdata.json")
 # print(config["user"], config["password"])
 # jq.auth(config["user"], config["password"])
-quotation = use_quotation("jqdata", config)  # 使用聚宽数据,需要申请权限 https://www.joinquant.com/default/index/sdk
+quotation = use_quotation("jqdata", config)  # 使用聚宽数据,需要申请权限 https://www.joinquant.com/default/index/sdk，基础数据所有接口，距今15个月前 至 距今最近3个月(即不包含最近3个月，且可调取的历史范围最长为1年
 
 class ETFQuant:
     # 初始化函数
