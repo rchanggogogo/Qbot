@@ -15,15 +15,16 @@ import jqdatasdk as jq
 import pandas as pd
 from easytrader.utils.misc import file2dict
 
-config = file2dict("jqdata.json")
-print(config["user"], config["password"])
-jq.auth(config["user"], config["password"])
-quotation = use_quotation("jqdata")
+config = file2dict("/Users/changlei/Work/01-project/Qbot/pytrader/jqdata.json")
+# print(config["user"], config["password"])
+# jq.auth(config["user"], config["password"])
+quotation = use_quotation("jqdata", config)  # 使用聚宽数据,需要申请权限 https://www.joinquant.com/default/index/sdk
 
 class ETFQuant:
     # 初始化函数
     def __init__(self, stkList):
-        self.edate = datetime.date.today()
+        # self.edate = datetime.date.today()
+        self.edate = "2024-01-06"
         self.date = pd.to_datetime(self.edate)
         if self.date.dayofweek + 1 in [6, 7]:  # 剔除周末的日期，避免混淆
             self.date = self.date - datetime.timedelta(self.date.dayofweek - 4)
@@ -81,6 +82,9 @@ class ETFQuant:
         buy_sail=0.7,
         sail_score=-1.4,
     ):
+        """
+        阻力支撑相对强度指标（Resistance Support Relative Strength，简称 RSRS）
+        """
         self.M = M
         # m + n + days
         data = quotation.get_bars(
@@ -152,10 +156,12 @@ fig, axes = plt.subplots(3, 1, sharex=True, figsize=(18, 12))
 # , '000300.XSHG'['159949.XSHE'
 stkList = ["002230"]
 eq = ETFQuant(stkList)
-days = 240
+days = 60
 # trading_dates = get_trade_da0ys(end_date=eq.date, count=eq.N)
-trading_dates = jq.get_trade_days(end_date=eq.date, count=days)
-RSRS = pd.DataFrame([0 for i in range(days)], index=trading_dates, columns=["0"])
+trading_dates = jq.get_trade_days(end_date=eq.date, count=days) # 指定范围内的交易日
+
+# 创建了三个DataFrame：RSRS、stock_price和slope，它们的index是交易日，列名分别为"0"、"1"和"1"。在这段代码中，RSRS的初始值为0，stock_price和slope的初始值为1
+RSRS = pd.DataFrame([0 for i in range(days)], index=trading_dates, columns=["0"]) # 交易日的RSRS
 stock_price = pd.DataFrame([1 for i in range(days)], index=trading_dates, columns=["1"])
 slope = pd.DataFrame([1 for i in range(days)], index=trading_dates, columns=["1"])
 
