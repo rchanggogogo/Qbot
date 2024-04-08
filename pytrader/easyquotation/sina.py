@@ -69,3 +69,7 @@ class Sina(basequotation.BaseQuotation):
                 time=stock[32],
             )
         return stock_dict
+
+if __name__ == "__main__":
+    sina = Sina()
+    print(sina.get_stock_data(["000001"]))
