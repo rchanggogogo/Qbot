@@ -55,17 +55,21 @@ class Quotation(metaclass=abc.ABCMeta):
         return get_all_trade_days()
 
     def get_price(self, security: str, date) -> float:
+        """
+        :param security: 股票代码
+        :param date: 结束日期
+        """
         df = self.get_bars(security, 1, unit="1d", end_dt=date)
         return df.close[-1]
 
     def get_north_money(self, date):
         return 0
 
-    def get_stock_info(self, security: str) -> SecurityInfo:
+    def get_stock_info(self, security_code: str) -> SecurityInfo:
         security = SecurityInfo()
-        security.code = security
-        security.name = security
-        return SecurityInfo
+        security.code = security_code
+        security.name = security_code
+        return security
 
 
 def is_shanghai(stock_code):
@@ -76,9 +80,16 @@ def is_shanghai(stock_code):
     ['5', '6', '9'] 开头的为 sh， 其余为 sz
     :param stock_code:股票ID, 若以 'sz', 'sh' 开头直接返回对应类型，否则使用内置规则判断
     :return 'sh' or 'sz'"""
-    assert type(stock_code) is str, "stock code need str type"
-    sh_head = ("50", "51", "60", "90", "110", "113", "132", "204", "5", "6", "9", "7")
-    return stock_code.startswith(sh_head)
+    if  not isinstance(stock_code, str):
+        stock_code = str(stock_code)
+        
+    sh_head = ("50", "51", "60", "90", "110", "113",
+               "132", "204", "5", "6", "9", "7")
+    if stock_code.startswith(("sh", "sz", "zz")):
+        return stock_code[:2]
+    else:
+        return "sh" if stock_code.startswith(sh_head) else "sz"
+
 
 
 def to_date_str(dt):
@@ -93,9 +104,11 @@ class TushareQuotation(Quotation):
     tushare 行情
     """ ""
 
-    def __init__(self):
-        tushare_config = file2dict("tushare.json")
-        ts.set_token(tushare_config["token"])
+    def __init__(self, config=None):
+        # tushare_config = file2dict("tushare.json")
+        if config is None:
+            raise ValueError("tushare config is None, please ensure you already get tushare access token")
+        ts.set_token(config["token"])
 
     def get_stock_type(self, stock_code: str):
         return "SH" if is_shanghai(stock_code) else "SZ"
@@ -152,16 +165,11 @@ class JQDataQuotation(Quotation):
 
     cache = {}
 
-    def __init__(self):
-        jqdata = {"user": os.getenv("USER_ID"), "password": os.getenv("PASSWORD")}
-        with open("jqdata.json", "w", encoding="utf-8") as fw:
-            json.dump(jqdata, fw, indent=4, ensure_ascii=False)
-
-        config = file2dict("jqdata.json")
-        print("user:  ", config["user"])
-        print("password:  ", config["password"])
-
+    def __init__(self, config=None):
+        if config is None:
+            raise ValueError("jqdata config is None, please ensure you already get jqdata access count, you can get acount from https://www.joinquant.com/")
         jqdatasdk.auth(config["user"], config["password"])
+        print("JQDataQuotation init")
 
     def _get_cache_key(self, security, end_dt, unit):
         return "%s_%s_%s" % (self._format_code(security), to_date_str(end_dt), unit)
@@ -221,6 +229,9 @@ class JQDataQuotation(Quotation):
         if cache_key in self.cache:
             df = self.cache[cache_key]
             return df[df.index <= end_dt] if "m" in unit else df
+        cache_dir = "data"
+        if not os.path.exists(cache_dir):
+            os.makedirs(cache_dir)
 
         cache_file = "data/jqdata-%s.csv" % cache_key
 
@@ -257,7 +268,9 @@ class JQDataQuotation(Quotation):
 class FreeOnlineQuotation(Quotation):
     """
     实时行情
-    """ ""
+    """
+    def __init__(self, config=None):
+        super(FreeOnlineQuotation, self).__init__(config=config)
 
     def get_stock_type(self, stock_code: str):
         return "sh" if is_shanghai(stock_code) else "sz"
@@ -280,17 +293,17 @@ class FreeOnlineQuotation(Quotation):
         return df
 
 
-def use_quotation(source: str) -> Quotation:
+def use_quotation(source: str, config: dict) -> Quotation:
     """
     对外API，行情工厂
     :param source:
     :return:
     """
     if source in ["jqdata"]:
-        return JQDataQuotation()
+        return JQDataQuotation(config=config)
     if source in ["tushare"]:
-        return TushareQuotation()
-    return FreeOnlineQuotation()
+        return TushareQuotation(config=config)
+    return FreeOnlineQuotation(config=config)
 
 
 if __name__ == "__main__":
